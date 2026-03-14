@@ -11,6 +11,10 @@ from . import font8x14
 BACKGROUND_PRIORITY_CLOCK = 0x7fffffff00000000
 
 TextGlyphs = { 'right_arrow': b'\x1a', 'degrees': b'\xf8' }
+FONT_SIZE_CHOICES = {
+    'normal' : 'normal',
+    'big_12' : 'big_12',
+}
 
 class DisplayBase:
     def __init__(self, io, columns=128, x_offset=0):
@@ -210,6 +214,7 @@ class SSD1306(DisplayBase):
         self.contrast = config.getint('contrast', 239, minval=0, maxval=255)
         self.vcomh = config.getint('vcomh', 0, minval=0, maxval=63)
         self.invert = config.getboolean('invert', False)
+        self.font_size = config.getchoice('font_size', FONT_SIZE_CHOICES, 'normal')
     def init(self):
         self.reset.init()
         init_cmds = [

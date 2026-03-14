@@ -191,10 +191,15 @@ class PrinterLCD:
         self.display_templates = templates.get_display_templates()
         self.display_data_groups = templates.get_display_data_groups()
         self.lcd_chip.set_glyphs(templates.get_display_glyphs())
-        dgroup = "_default_16x4"
-        if self.lcd_chip.get_dimensions()[0] == 20:
-            dgroup = "_default_20x4"
-        dgroup = config.get('display_group', dgroup)
+        user_group = config.get('display_group', None)
+        if user_group is None:
+            dgroup = "_default_16x4"
+            if self.lcd_chip.get_dimensions()[0] == 20:
+                dgroup = "_default_20x4"
+            elif getattr(self.lcd_chip, 'font_size', "normal") == 'big_12':
+                dgroup = "_default_ssd1306_big12"
+        else:
+            dgroup = user_group
         self.show_data_group = self.display_data_groups.get(dgroup)
         if self.show_data_group is None:
             raise config.error("Unknown display_data group '%s'" % (dgroup,))
